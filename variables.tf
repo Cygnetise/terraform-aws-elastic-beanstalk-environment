@@ -460,3 +460,6 @@ variable "ami_id" {
   default     = null
   description = "The id of the AMI to associate with the Amazon EC2 instances"
 }
+
+variable "s3_logs_bucket_id" {
+}
