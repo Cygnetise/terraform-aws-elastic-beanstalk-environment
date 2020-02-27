@@ -920,7 +920,7 @@ resource "aws_s3_bucket" "elb_logs" {
 
   logging {
     target_bucket = "${var.s3_logs_bucket_id}"
-    target_prefix = "${var.environment}/log/"
+    target_prefix = "${var.stage}/elb_logs/"
   }
 
   server_side_encryption_configuration {
