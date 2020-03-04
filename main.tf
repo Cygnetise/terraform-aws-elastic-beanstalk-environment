@@ -939,3 +939,11 @@ module "dns_hostname" {
   zone_id = var.dns_zone_id
   records = [aws_elastic_beanstalk_environment.default.cname]
 }
+
+resource "aws_s3_bucket_public_access_block" "backups" {
+  bucket = aws_s3_bucket.elb_logs.id
+
+  block_public_acls   = true
+  block_public_policy = true
+  ignore_public_acls  = true
+}
