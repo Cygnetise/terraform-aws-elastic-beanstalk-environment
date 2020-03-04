@@ -1601,6 +1601,14 @@ resource "aws_s3_bucket" "elb_logs" {
   }
 }
 
+resource "aws_s3_bucket_public_access_block" "backups" {
+  bucket = aws_s3_bucket.elb_logs.id
+
+  block_public_acls   = true
+  block_public_policy = true
+  ignore_public_acls  = true
+}
+
 module "tld" {
   source    = "git::https://github.com/t14/terraform-aws-route53-cluster-hostname.git?ref=tf_upgrade"
   namespace = var.namespace
