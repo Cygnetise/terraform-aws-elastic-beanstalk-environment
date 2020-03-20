@@ -1486,6 +1486,86 @@ resource "aws_elastic_beanstalk_environment" "default" {
       var.env_default_value,
     )
   }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name = element(
+      concat(keys(var.env_vars), [format(var.env_default_key, 50)]),
+      50,
+    )
+    value = lookup(
+      var.env_vars,
+      element(
+        concat(keys(var.env_vars), [format(var.env_default_key, 50)]),
+        50,
+      ),
+      var.env_default_value,
+    )
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name = element(
+      concat(keys(var.env_vars), [format(var.env_default_key, 51)]),
+      51,
+    )
+    value = lookup(
+      var.env_vars,
+      element(
+        concat(keys(var.env_vars), [format(var.env_default_key, 51)]),
+        51,
+      ),
+      var.env_default_value,
+    )
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name = element(
+      concat(keys(var.env_vars), [format(var.env_default_key, 52)]),
+      52,
+    )
+    value = lookup(
+      var.env_vars,
+      element(
+        concat(keys(var.env_vars), [format(var.env_default_key, 52)]),
+        52,
+      ),
+      var.env_default_value,
+    )
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name = element(
+      concat(keys(var.env_vars), [format(var.env_default_key, 53)]),
+      53,
+    )
+    value = lookup(
+      var.env_vars,
+      element(
+        concat(keys(var.env_vars), [format(var.env_default_key, 53)]),
+        53,
+      ),
+      var.env_default_value,
+    )
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name = element(
+      concat(keys(var.env_vars), [format(var.env_default_key, 54)]),
+      54,
+    )
+    value = lookup(
+      var.env_vars,
+      element(
+        concat(keys(var.env_vars), [format(var.env_default_key, 54)]),
+        54,
+      ),
+      var.env_default_value,
+    )
+  }
+
+
+
+
+
 
   ###===================== Application Load Balancer Health check settings =====================================================###
   # The Application Load Balancer health check does not take into account the Elastic Beanstalk health check path
@@ -1607,6 +1687,7 @@ resource "aws_s3_bucket_public_access_block" "backups" {
   block_public_acls   = true
   block_public_policy = true
   ignore_public_acls  = true
+  restrict_public_buckets = true
 }
 
 module "tld" {
