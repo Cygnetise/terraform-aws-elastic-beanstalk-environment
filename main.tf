@@ -1549,23 +1549,108 @@ resource "aws_elastic_beanstalk_environment" "default" {
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name = element(
-      concat(keys(var.env_vars), [format(var.env_default_key, 54)]),
-      54,
+      concat(keys(var.env_vars), [format(var.env_default_key, 55)]),
+      55,
     )
     value = lookup(
       var.env_vars,
       element(
-        concat(keys(var.env_vars), [format(var.env_default_key, 54)]),
-        54,
+        concat(keys(var.env_vars), [format(var.env_default_key, 55)]),
+        55,
       ),
       var.env_default_value,
     )
   }
-
-
-
-
-
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name = element(
+      concat(keys(var.env_vars), [format(var.env_default_key, 56)]),
+      56,
+    )
+    value = lookup(
+      var.env_vars,
+      element(
+        concat(keys(var.env_vars), [format(var.env_default_key, 56)]),
+        56,
+      ),
+      var.env_default_value,
+    )
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name = element(
+      concat(keys(var.env_vars), [format(var.env_default_key, 57)]),
+      57,
+    )
+    value = lookup(
+      var.env_vars,
+      element(
+        concat(keys(var.env_vars), [format(var.env_default_key, 57)]),
+        57,
+      ),
+      var.env_default_value,
+    )
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name = element(
+      concat(keys(var.env_vars), [format(var.env_default_key, 58)]),
+      58,
+    )
+    value = lookup(
+      var.env_vars,
+      element(
+        concat(keys(var.env_vars), [format(var.env_default_key, 58)]),
+        58,
+      ),
+      var.env_default_value,
+    )
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name = element(
+      concat(keys(var.env_vars), [format(var.env_default_key, 59)]),
+      59,
+    )
+    value = lookup(
+      var.env_vars,
+      element(
+        concat(keys(var.env_vars), [format(var.env_default_key, 59)]),
+        59,
+      ),
+      var.env_default_value,
+    )
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name = element(
+      concat(keys(var.env_vars), [format(var.env_default_key, 60)]),
+      60,
+    )
+    value = lookup(
+      var.env_vars,
+      element(
+        concat(keys(var.env_vars), [format(var.env_default_key, 60)]),
+        60,
+      ),
+      var.env_default_value,
+    )
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name = element(
+      concat(keys(var.env_vars), [format(var.env_default_key, 61)]),
+      61,
+    )
+    value = lookup(
+      var.env_vars,
+      element(
+        concat(keys(var.env_vars), [format(var.env_default_key, 61)]),
+        61,
+      ),
+      var.env_default_value,
+    )
+  }
 
   ###===================== Application Load Balancer Health check settings =====================================================###
   # The Application Load Balancer health check does not take into account the Elastic Beanstalk health check path
