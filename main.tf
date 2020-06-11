@@ -919,7 +919,7 @@ resource "aws_s3_bucket" "elb_logs" {
   policy        = join("", data.aws_iam_policy_document.elb_logs.*.json)
 
   logging {
-    target_bucket = "${var.s3_logs_bucket_id}"
+    target_bucket = var.s3_logs_bucket_id
     target_prefix = "${var.stage}/elb_logs/"
   }
 
@@ -941,7 +941,7 @@ module "dns_hostname" {
 }
 
 resource "aws_s3_bucket_public_access_block" "backups" {
-  bucket = aws_s3_bucket.elb_logs.id
+  bucket = join("", sort(aws_s3_bucket.elb_logs.*.id))
 
   block_public_acls   = true
   block_public_policy = true
