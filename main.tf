@@ -1651,6 +1651,51 @@ resource "aws_elastic_beanstalk_environment" "default" {
       var.env_default_value,
     )
   }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name = element(
+      concat(keys(var.env_vars), [format(var.env_default_key, 62)]),
+      62,
+    )
+    value = lookup(
+      var.env_vars,
+      element(
+        concat(keys(var.env_vars), [format(var.env_default_key, 62)]),
+        62,
+      ),
+      var.env_default_value,
+    )
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name = element(
+      concat(keys(var.env_vars), [format(var.env_default_key, 63)]),
+      63,
+    )
+    value = lookup(
+      var.env_vars,
+      element(
+        concat(keys(var.env_vars), [format(var.env_default_key, 63)]),
+        63,
+      ),
+      var.env_default_value,
+    )
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name = element(
+      concat(keys(var.env_vars), [format(var.env_default_key, 64)]),
+      64,
+    )
+    value = lookup(
+      var.env_vars,
+      element(
+        concat(keys(var.env_vars), [format(var.env_default_key, 64)]),
+        64,
+      ),
+      var.env_default_value,
+    )
+  }
 
   ###===================== Application Load Balancer Health check settings =====================================================###
   # The Application Load Balancer health check does not take into account the Elastic Beanstalk health check path
