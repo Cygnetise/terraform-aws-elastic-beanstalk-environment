@@ -254,11 +254,16 @@ data "aws_iam_policy_document" "default" {
     sid = "AllowS3OperationsOnElasticBeanstalkBuckets"
 
     actions = [
-      "s3:*"
+      "s3:PutObject",
+      "s3:ListBucketVersions",
+      "s3:ListBucket",
+      "s3:GetObjectVersion",
+      "s3:GetObject"
     ]
 
     resources = [
-      "arn:aws:s3:::*"
+      "arn:aws:s3:::${var.namespace}-${var.stage}-bucket/*",
+      "arn:aws:s3:::${var.namespace}-${var.stage}-bucket",
     ]
 
     effect = "Allow"
