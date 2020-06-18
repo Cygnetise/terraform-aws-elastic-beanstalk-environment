@@ -262,8 +262,8 @@ data "aws_iam_policy_document" "default" {
     ]
 
     resources = [
-      "arn:aws:s3:::${var.namespace}-${var.environment}-bucket/*",
-      "arn:aws:s3:::${var.namespace}-${var.environment}-bucket",
+      "arn:aws:s3:::${var.namespace}-${var.stage}-bucket/*",
+      "arn:aws:s3:::${var.namespace}-${var.stage}-bucket",
     ]
 
     effect = "Allow"
