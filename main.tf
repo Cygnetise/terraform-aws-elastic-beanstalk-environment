@@ -104,14 +104,14 @@ resource "aws_iam_role_policy_attachment" "worker_tier" {
   policy_arn = "arn:aws:iam::aws:policy/AWSElasticBeanstalkWorkerTier"
 }
 
-#resource "aws_iam_role_policy_attachment" "ssm_ec2" {
-#  role       = aws_iam_role.ec2.name
-#  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
-#
-#  lifecycle {
-#    create_before_destroy = true
-#  }
-#}
+resource "aws_iam_role_policy_attachment" "ssm_ec2" {
+  role       = aws_iam_role.ec2.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonSSMManagedInstanceCore"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
 
 resource "aws_iam_role_policy_attachment" "ssm_automation" {
   role       = aws_iam_role.ec2.name
