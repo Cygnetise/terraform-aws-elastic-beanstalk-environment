@@ -923,6 +923,10 @@ resource "aws_s3_bucket" "elb_logs" {
   force_destroy = var.force_destroy
   policy        = join("", data.aws_iam_policy_document.elb_logs.*.json)
 
+  versioning {
+   enabled = true
+  }
+
   logging {
     target_bucket = var.s3_logs_bucket_id
     target_prefix = "${var.stage}/elb_logs/"
@@ -946,9 +950,39 @@ module "dns_hostname" {
 }
 
 resource "aws_s3_bucket_public_access_block" "backups" {
+  count  = var.tier == "WebServer" ? 1 : 0
   bucket = join("", sort(aws_s3_bucket.elb_logs.*.id))
 
   block_public_acls   = true
   block_public_policy = true
   ignore_public_acls  = true
+}
+
+data "aws_iam_policy_document" "elb_logs" {
+  statement {
+    sid    = "ForceSSLOnlyAccess"
+    effect = "Deny"
+    actions = [
+      "s3:*",
+    ]
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+      values = ["false"]
+    }
+    resources = [
+      aws_s3_bucket.elb_logs.arn,
+      "${aws_s3_bucket.elb_logs.arn}/*",
+    ]
+  }
+}
+
+resource "aws_s3_bucket_policy" "elb_logs" {
+  count  = var.tier == "WebServer" ? 1 : 0
+  bucket = aws_s3_bucket.elb_logs.id
+  policy = data.aws_iam_policy_document.elb_logs.json
 }
