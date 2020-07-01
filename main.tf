@@ -958,7 +958,7 @@ resource "aws_s3_bucket_public_access_block" "backups" {
   ignore_public_acls  = true
 }
 
-data "aws_iam_policy_document" "elb_logs" {
+data "aws_iam_policy_document" "elb_logs_https" {
   statement {
     sid    = "ForceSSLOnlyAccess"
     effect = "Deny"
@@ -981,8 +981,8 @@ data "aws_iam_policy_document" "elb_logs" {
   }
 }
 
-resource "aws_s3_bucket_policy" "elb_logs" {
+resource "aws_s3_bucket_policy" "elb_logs_https" {
   count  = var.tier == "WebServer" ? 1 : 0
   bucket = aws_s3_bucket.elb_logs.id
-  policy = data.aws_iam_policy_document.elb_logs.json
+  policy = data.aws_iam_policy_document.elb_logs_https.json
 }
