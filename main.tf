@@ -914,6 +914,27 @@ data "aws_iam_policy_document" "elb_logs" {
 
     effect = "Allow"
   }
+
+  statement {
+    sid    = "ForceSSLOnlyAccess"
+    effect = "Deny"
+    actions = [
+      "s3:*",
+    ]
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+      values = ["false"]
+    }
+    resources = [
+      "arn:aws:s3:::${module.label.id}-eb-loadbalancer-logs",
+      "arn:aws:s3:::${module.label.id}-eb-loadbalancer-logs/*"
+    ]
+  }
 }
 
 resource "aws_s3_bucket" "elb_logs" {
@@ -956,33 +977,4 @@ resource "aws_s3_bucket_public_access_block" "backups" {
   block_public_acls   = true
   block_public_policy = true
   ignore_public_acls  = true
-}
-
-data "aws_iam_policy_document" "elb_logs_https" {
-  statement {
-    sid    = "ForceSSLOnlyAccess"
-    effect = "Deny"
-    actions = [
-      "s3:*",
-    ]
-    principals {
-      type        = "AWS"
-      identifiers = ["*"]
-    }
-    condition {
-      test     = "Bool"
-      variable = "aws:SecureTransport"
-      values = ["false"]
-    }
-    resources = [
-      aws_s3_bucket.elb_logs.arn,
-      "${aws_s3_bucket.elb_logs.arn}/*",
-    ]
-  }
-}
-
-resource "aws_s3_bucket_policy" "elb_logs_https" {
-  count  = var.tier == "WebServer" ? 1 : 0
-  bucket = aws_s3_bucket.elb_logs.id
-  policy = data.aws_iam_policy_document.elb_logs_https.json
 }
