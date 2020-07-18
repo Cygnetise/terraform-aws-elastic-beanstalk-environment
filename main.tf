@@ -94,6 +94,12 @@ resource "aws_iam_role_policy" "default" {
   policy = data.aws_iam_policy_document.default.json
 }
 
+resource "aws_iam_role_policy" "shoryuken" {
+  name   = "${module.label.id}-eb-shoryuken"
+  role   = aws_iam_role.ec2.id
+  policy = data.aws_iam_policy_document.shoryuken.json
+}
+
 resource "aws_iam_role_policy_attachment" "web_tier" {
   role       = aws_iam_role.ec2.name
   policy_arn = "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier"
@@ -159,6 +165,41 @@ data "aws_iam_policy_document" "default" {
 resource "aws_iam_instance_profile" "ec2" {
   name = "${module.label.id}-eb-ec2"
   role = aws_iam_role.ec2.name
+}
+
+data "aws_iam_policy_document" "shoryuken" {
+  statement {
+    sid = "ShoryukenQueueAccess"
+
+    actions = [
+      "sqs:DeleteMessage",
+      "sqs:GetQueueUrl",
+      "sqs:ChangeMessageVisibility",
+      "sqs:ReceiveMessage",
+      "sqs:SendMessage",
+      "sqs:GetQueueAttributes"
+    ]
+
+    resources = [
+      "arn:aws:sqs:eu-west-1:673695927258:${var.namespace}-${var.stage}-*"
+    ]
+
+    effect = "Allow"
+  }
+
+  statement {
+    sid = "ShoryukenListQueues"
+
+    actions = [
+     "sqs:ListQueues",
+    ]
+
+    resources = [
+      "*"
+    ]
+
+    effect = "Allow"
+  }
 }
 
 resource "aws_security_group" "default" {
