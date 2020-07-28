@@ -171,6 +171,23 @@ data "aws_iam_policy_document" "default" {
 
     effect = "Allow"
   }
+  statement {
+    sid = "AllowS3Shared"
+
+    actions = [
+      "s3:ListBucketVersions",
+      "s3:ListBucket",
+      "s3:GetObjectVersion",
+      "s3:GetObject"
+    ]
+
+    resources = [
+      "arn:aws:s3:::cygnetise-shared/*",
+      "arn:aws:s3:::cygnetise-shared",
+    ]
+
+    effect = "Allow"
+  }
 }
 
 resource "aws_iam_instance_profile" "ec2" {
