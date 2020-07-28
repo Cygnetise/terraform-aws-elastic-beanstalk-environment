@@ -143,6 +143,17 @@ resource "aws_ssm_activation" "ec2" {
 
 data "aws_iam_policy_document" "default" {
   statement {
+    sid = "Default"
+
+    actions = [
+      "logs:CreateLogGroup"
+    ]
+
+    resources = ["*"]
+
+    effect = "Allow"
+  }
+  statement {
     sid = "AllowS3OperationsOnElasticBeanstalkBuckets"
 
     actions = [
