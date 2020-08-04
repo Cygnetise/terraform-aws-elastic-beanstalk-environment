@@ -23,6 +23,12 @@ data "aws_iam_policy_document" "service" {
       identifiers = ["elasticbeanstalk.amazonaws.com"]
     }
 
+    condition {
+      test     = "StringEquals"
+      variable = "sts:ExternalId"
+      values    = [ "elasticbeanstalk"]
+    }
+
     effect = "Allow"
   }
 }
