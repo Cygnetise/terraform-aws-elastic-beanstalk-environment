@@ -536,6 +536,13 @@ resource "aws_elastic_beanstalk_environment" "default" {
   }
 
   setting {
+    namespace = "aws:elasticbeanstalk:healthreporting:system"
+    name      = "EnhancedHealthAuthEnabled"
+    value     = var.enhanced_auth_enabled
+    resource  = ""
+  }
+
+  setting {
     namespace = "aws:elasticbeanstalk:managedactions"
     name      = "ManagedActionsEnabled"
     value     = var.managed_actions_enabled ? "true" : "false"

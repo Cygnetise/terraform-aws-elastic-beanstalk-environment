@@ -149,6 +149,12 @@ variable "enhanced_reporting_enabled" {
   description = "Whether to enable \"enhanced\" health reporting for this environment.  If false, \"basic\" reporting is used.  When you set this to false, you must also set `enable_managed_actions` to false"
 }
 
+variable "enhanced_auth_enabled" {
+  type        = bool
+  default     = true
+  description = "To increase security of your environment and help prevent health data spoofing on your behalf"
+}
+
 variable "managed_actions_enabled" {
   type        = bool
   default     = true
