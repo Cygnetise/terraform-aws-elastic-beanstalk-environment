@@ -160,6 +160,18 @@ data "aws_iam_policy_document" "default" {
     effect = "Allow"
   }
   statement {
+    sid = "AllowSecretManagerGetSecretValue"
+
+    actions = [
+      "secretsmanager:GetSecretValue"
+    ]
+
+    resources = [
+      "arn:aws:secretsmanager:eu-west-1:673695927258:secret:elastic-beankstalk/${var.namespace}-${var.state}-app/*"
+    ]
+    effect = "Allow"
+  }
+  statement {
     sid = "AllowS3OperationsOnElasticBeanstalkBuckets"
 
     actions = [
