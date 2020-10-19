@@ -167,7 +167,7 @@ data "aws_iam_policy_document" "default" {
     ]
 
     resources = [
-      "arn:aws:secretsmanager:eu-west-1:673695927258:secret:elastic-beankstalk/${var.namespace}-${var.state}-app/*"
+      "arn:aws:secretsmanager:eu-west-1:673695927258:secret:elastic-beankstalk/${var.namespace}-${var.stage}-app/*"
     ]
     effect = "Allow"
   }
