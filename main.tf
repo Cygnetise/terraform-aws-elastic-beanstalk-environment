@@ -100,12 +100,6 @@ resource "aws_iam_role_policy" "default" {
   policy = data.aws_iam_policy_document.default.json
 }
 
-resource "aws_iam_role_policy" "shoryuken" {
-  name   = "${module.label.id}-eb-shoryuken"
-  role   = aws_iam_role.ec2.id
-  policy = data.aws_iam_policy_document.shoryuken.json
-}
-
 resource "aws_iam_role_policy_attachment" "web_tier" {
   role       = aws_iam_role.ec2.name
   policy_arn = "arn:aws:iam::aws:policy/AWSElasticBeanstalkWebTier"
@@ -159,93 +153,11 @@ data "aws_iam_policy_document" "default" {
 
     effect = "Allow"
   }
-  statement {
-    sid = "AllowSecretManagerGetSecretValue"
-
-    actions = [
-      "secretsmanager:GetSecretValue"
-    ]
-
-    resources = [
-      "arn:aws:secretsmanager:eu-west-1:673695927258:secret:elastic-beankstalk/${var.namespace}-${var.stage}-app/*"
-    ]
-    effect = "Allow"
-  }
-  statement {
-    sid = "AllowS3OperationsOnElasticBeanstalkBuckets"
-
-    actions = [
-      "s3:PutObject",
-      "s3:ListBucketVersions",
-      "s3:ListBucket",
-      "s3:GetObjectVersion",
-      "s3:GetObject"
-    ]
-
-    resources = [
-      "arn:aws:s3:::${var.namespace}-${var.stage}-bucket/*",
-      "arn:aws:s3:::${var.namespace}-${var.stage}-bucket",
-    ]
-
-    effect = "Allow"
-  }
-  statement {
-    sid = "AllowS3Shared"
-
-    actions = [
-      "s3:ListBucketVersions",
-      "s3:ListBucket",
-      "s3:GetObjectVersion",
-      "s3:GetObject"
-    ]
-
-    resources = [
-      "arn:aws:s3:::cygnetise-shared/*",
-      "arn:aws:s3:::cygnetise-shared",
-    ]
-
-    effect = "Allow"
-  }
 }
 
 resource "aws_iam_instance_profile" "ec2" {
   name = "${module.label.id}-eb-ec2"
   role = aws_iam_role.ec2.name
-}
-
-data "aws_iam_policy_document" "shoryuken" {
-  statement {
-    sid = "ShoryukenQueueAccess"
-
-    actions = [
-      "sqs:DeleteMessage",
-      "sqs:GetQueueUrl",
-      "sqs:ChangeMessageVisibility",
-      "sqs:ReceiveMessage",
-      "sqs:SendMessage",
-      "sqs:GetQueueAttributes"
-    ]
-
-    resources = [
-      "arn:aws:sqs:eu-west-1:673695927258:${var.namespace}-${var.stage}-*"
-    ]
-
-    effect = "Allow"
-  }
-
-  statement {
-    sid = "ShoryukenListQueues"
-
-    actions = [
-     "sqs:ListQueues",
-    ]
-
-    resources = [
-      "*"
-    ]
-
-    effect = "Allow"
-  }
 }
 
 resource "aws_security_group" "default" {
