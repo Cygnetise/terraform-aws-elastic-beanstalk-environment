@@ -837,6 +837,16 @@ resource "aws_s3_bucket" "elb_logs" {
   }
 }
 
+resource "aws_s3_bucket_public_access_block" "elb_logs" {
+  count         = var.tier == "WebServer" ? 1 : 0
+  bucket = aws_s3_bucket.elb_logs.id
+
+  block_public_acls   = true
+  block_public_policy = true
+  ignore_public_acls  = true
+  restrict_public_buckets = true
+}
+
 module "dns_hostname" {
   source  = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.3.0"
   enabled = var.dns_zone_id != "" && var.tier == "WebServer" ? true : false
