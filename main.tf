@@ -839,7 +839,7 @@ resource "aws_s3_bucket" "elb_logs" {
 
 resource "aws_s3_bucket_public_access_block" "elb_logs" {
   count         = var.tier == "WebServer" ? 1 : 0
-  bucket = aws_s3_bucket.elb_logs.id
+  bucket        = aws_s3_bucket.elb_logs[count.index].id
 
   block_public_acls   = true
   block_public_policy = true
