@@ -348,8 +348,14 @@ variable "root_volume_size" {
 
 variable "root_volume_type" {
   type        = string
-  default     = "gp2"
+  default     = "gp3"
   description = "The type of the EBS root volume"
+}
+
+variable "root_volume_iops" {
+  type        = number
+  default     = 3000 
+  description = "The number of iops on the EBS root volume"
 }
 
 variable "autoscale_measure_name" {
