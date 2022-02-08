@@ -861,13 +861,3 @@ module "dns_hostname" {
   zone_id = var.dns_zone_id
   records = [aws_elastic_beanstalk_environment.default.cname]
 }
-
-resource "aws_s3_bucket_public_access_block" "backups" {
-  count  = var.tier == "WebServer" ? 1 : 0
-  bucket = join("", sort(aws_s3_bucket.elb_logs.*.id))
-
-  block_public_acls   = true
-  block_public_policy = true
-  ignore_public_acls  = true
-  restrict_public_buckets = true
-}
