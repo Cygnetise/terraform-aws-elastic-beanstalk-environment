@@ -580,6 +580,13 @@ resource "aws_elastic_beanstalk_environment" "default" {
     resource  = ""
   }
 
+  setting {
+    namespace = "aws:autoscaling:launchconfiguration"
+    name      = "RootVolumeType"
+    value     = var.root_volume_type
+    resource  = ""
+  }
+
   dynamic "setting" {
     for_each = var.ami_id == null ? [] : [var.ami_id]
     content {
