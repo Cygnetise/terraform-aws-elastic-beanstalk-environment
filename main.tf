@@ -272,7 +272,7 @@ locals {
     {
       namespace = "aws:elbv2:loadbalancer"
       name      = "AccessLogsS3Bucket"
-      value     = join("", sort(aws_s3_bucket.elb_logs.*.id))
+      value     = var.s3_eb_elb_logs_bucket_id
     },
     {
       namespace = "aws:elbv2:loadbalancer"
@@ -769,89 +769,6 @@ resource "aws_elastic_beanstalk_environment" "default" {
       resource  = ""
     }
   }
-}
-
-data "aws_elb_service_account" "main" {
-  count = var.tier == "WebServer" ? 1 : 0
-}
-
-data "aws_iam_policy_document" "elb_logs" {
-  count = var.tier == "WebServer" ? 1 : 0
-
-  statement {
-    sid = ""
-
-    actions = [
-      "s3:PutObject",
-    ]
-
-    resources = [
-      "arn:aws:s3:::${module.label.id}-eb-loadbalancer-logs/*"
-    ]
-
-    principals {
-      type        = "AWS"
-      identifiers = [join("", data.aws_elb_service_account.main.*.arn)]
-    }
-
-    effect = "Allow"
-  }
-
-  statement {
-    sid    = "ForceSSLOnlyAccess"
-    effect = "Deny"
-    actions = [
-      "s3:*",
-    ]
-    principals {
-      type        = "AWS"
-      identifiers = ["*"]
-    }
-    condition {
-      test     = "Bool"
-      variable = "aws:SecureTransport"
-      values = ["false"]
-    }
-    resources = [
-      "arn:aws:s3:::${module.label.id}-eb-loadbalancer-logs",
-      "arn:aws:s3:::${module.label.id}-eb-loadbalancer-logs/*"
-    ]
-  }
-}
-
-resource "aws_s3_bucket" "elb_logs" {
-  count         = var.tier == "WebServer" ? 1 : 0
-  bucket        = "${module.label.id}-eb-loadbalancer-logs"
-  acl           = "private"
-  force_destroy = var.force_destroy
-  policy        = join("", data.aws_iam_policy_document.elb_logs.*.json)
-
-  versioning {
-   enabled = true
-  }
-
-  logging {
-    target_bucket = var.s3_logs_bucket_id
-    target_prefix = "${var.stage}/elb_logs/"
-  }
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
-    }
-  }
-}
-
-resource "aws_s3_bucket_public_access_block" "elb_logs" {
-  count         = var.tier == "WebServer" ? 1 : 0
-  bucket        = join("", sort(aws_s3_bucket.elb_logs.*.id))
-
-  block_public_acls   = true
-  block_public_policy = true
-  ignore_public_acls  = true
-  restrict_public_buckets = true
 }
 
 module "dns_hostname" {
