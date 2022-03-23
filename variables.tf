@@ -497,5 +497,5 @@ variable "deployment_timeout" {
   description = "Number of seconds to wait for an instance to complete executing commands"
 }
 
-variable "s3_logs_bucket_id" {
+variable "s3_eb_elb_logs_bucket_id" {
 }
