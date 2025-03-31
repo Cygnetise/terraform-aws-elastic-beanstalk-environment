@@ -26,7 +26,7 @@ data "aws_iam_policy_document" "service" {
     condition {
       test     = "StringEquals"
       variable = "sts:ExternalId"
-      values    = [ "elasticbeanstalk"]
+      values   = ["elasticbeanstalk"]
     }
 
     effect = "Allow"
@@ -276,7 +276,7 @@ locals {
     },
     {
       namespace = "aws:elbv2:loadbalancer"
-      name      = "AccessLogsS3Enabled"
+      name      = "DropInvalidHeaderFields"
       value     = "true"
     },
     {
@@ -322,7 +322,11 @@ locals {
       name      = "ELBSubnets"
       value     = join(",", sort(var.loadbalancer_subnets))
     },
-
+    {
+      namespace = "aws:ec2:vpc"
+      name      = "ELBSubnets"
+      value     = join(",", sort(var.loadbalancer_subnets))
+    },
     {
       namespace = "aws:ec2:vpc"
       name      = "ELBScheme"
@@ -427,7 +431,7 @@ resource "aws_elastic_beanstalk_environment" "default" {
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
     name      = "DisableIMDSv1"
-    value     = "true" 
+    value     = "true"
   }
 
   setting {
