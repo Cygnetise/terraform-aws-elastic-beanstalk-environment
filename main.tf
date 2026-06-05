@@ -81,6 +81,12 @@ data "aws_iam_policy_document" "ec2" {
     }
 
     effect = "Allow"
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceAccount"
+      values   = [var.account_id]
+    }
   }
 }
 
