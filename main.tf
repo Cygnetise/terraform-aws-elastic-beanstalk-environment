@@ -581,6 +581,13 @@ resource "aws_elastic_beanstalk_environment" "default" {
 
   setting {
     namespace = "aws:autoscaling:launchconfiguration"
+    name      = "RootVolumeIOPS"
+    value     = var.root_volume_iops
+    resource  = ""
+  }
+
+  setting {
+    namespace = "aws:autoscaling:launchconfiguration"
     name      = "RootVolumeType"
     value     = var.root_volume_type
     resource  = ""
