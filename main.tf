@@ -12,6 +12,12 @@ data "aws_iam_policy_document" "service" {
       identifiers = ["elasticbeanstalk.amazonaws.com"]
     }
 
+    condition {
+      test     = "StringEquals"
+      variable = "sts:ExternalId"
+      values   = ["elasticbeanstalk"]
+    }
+
     effect = "Allow"
   }
 }
@@ -49,6 +55,12 @@ data "aws_iam_policy_document" "ec2" {
       identifiers = ["ec2.amazonaws.com"]
     }
 
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceAccount"
+      values   = [var.account_id]
+    }
+
     effect = "Allow"
   }
 
@@ -62,6 +74,12 @@ data "aws_iam_policy_document" "ec2" {
     principals {
       type        = "Service"
       identifiers = ["ssm.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceAccount"
+      values   = [var.account_id]
     }
 
     effect = "Allow"
@@ -129,158 +147,13 @@ resource "aws_ssm_activation" "ec2" {
 
 data "aws_iam_policy_document" "default" {
   statement {
+    sid = "Default"
+
     actions = [
-      "elasticloadbalancing:DescribeInstanceHealth",
-      "elasticloadbalancing:DescribeLoadBalancers",
-      "elasticloadbalancing:DescribeTargetHealth",
-      "ec2:DescribeInstances",
-      "ec2:DescribeInstanceStatus",
-      "ec2:GetConsoleOutput",
-      "ec2:AssociateAddress",
-      "ec2:DescribeAddresses",
-      "ec2:DescribeSecurityGroups",
-      "sqs:GetQueueAttributes",
-      "sqs:GetQueueUrl",
-      "autoscaling:DescribeAutoScalingGroups",
-      "autoscaling:DescribeAutoScalingInstances",
-      "autoscaling:DescribeScalingActivities",
-      "autoscaling:DescribeNotificationConfigurations",
+      "logs:CreateLogGroup"
     ]
 
     resources = ["*"]
-
-    effect = "Allow"
-  }
-
-  statement {
-    sid = "AllowOperations"
-
-    actions = [
-      "autoscaling:AttachInstances",
-      "autoscaling:CreateAutoScalingGroup",
-      "autoscaling:CreateLaunchConfiguration",
-      "autoscaling:DeleteLaunchConfiguration",
-      "autoscaling:DeleteAutoScalingGroup",
-      "autoscaling:DeleteScheduledAction",
-      "autoscaling:DescribeAccountLimits",
-      "autoscaling:DescribeAutoScalingGroups",
-      "autoscaling:DescribeAutoScalingInstances",
-      "autoscaling:DescribeLaunchConfigurations",
-      "autoscaling:DescribeLoadBalancers",
-      "autoscaling:DescribeNotificationConfigurations",
-      "autoscaling:DescribeScalingActivities",
-      "autoscaling:DescribeScheduledActions",
-      "autoscaling:DetachInstances",
-      "autoscaling:PutScheduledUpdateGroupAction",
-      "autoscaling:ResumeProcesses",
-      "autoscaling:SetDesiredCapacity",
-      "autoscaling:SuspendProcesses",
-      "autoscaling:TerminateInstanceInAutoScalingGroup",
-      "autoscaling:UpdateAutoScalingGroup",
-      "cloudwatch:PutMetricAlarm",
-      "ec2:AssociateAddress",
-      "ec2:AllocateAddress",
-      "ec2:AuthorizeSecurityGroupEgress",
-      "ec2:AuthorizeSecurityGroupIngress",
-      "ec2:CreateSecurityGroup",
-      "ec2:DeleteSecurityGroup",
-      "ec2:DescribeAccountAttributes",
-      "ec2:DescribeAddresses",
-      "ec2:DescribeImages",
-      "ec2:DescribeInstances",
-      "ec2:DescribeKeyPairs",
-      "ec2:DescribeSecurityGroups",
-      "ec2:DescribeSnapshots",
-      "ec2:DescribeSubnets",
-      "ec2:DescribeVpcs",
-      "ec2:DisassociateAddress",
-      "ec2:ReleaseAddress",
-      "ec2:RevokeSecurityGroupEgress",
-      "ec2:RevokeSecurityGroupIngress",
-      "ec2:TerminateInstances",
-      "ecs:CreateCluster",
-      "ecs:DeleteCluster",
-      "ecs:DescribeClusters",
-      "ecs:RegisterTaskDefinition",
-      "elasticbeanstalk:*",
-      "elasticloadbalancing:ApplySecurityGroupsToLoadBalancer",
-      "elasticloadbalancing:ConfigureHealthCheck",
-      "elasticloadbalancing:CreateLoadBalancer",
-      "elasticloadbalancing:DeleteLoadBalancer",
-      "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
-      "elasticloadbalancing:DescribeInstanceHealth",
-      "elasticloadbalancing:DescribeLoadBalancers",
-      "elasticloadbalancing:DescribeTargetHealth",
-      "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
-      "elasticloadbalancing:DescribeTargetGroups",
-      "elasticloadbalancing:RegisterTargets",
-      "elasticloadbalancing:DeregisterTargets",
-      "iam:ListRoles",
-      "iam:PassRole",
-      "logs:CreateLogGroup",
-      "logs:PutRetentionPolicy",
-      "rds:DescribeDBEngineVersions",
-      "rds:DescribeDBInstances",
-      "rds:DescribeOrderableDBInstanceOptions",
-      "s3:GetObject",
-      "s3:GetObjectAcl",
-      "s3:ListBucket",
-      "sns:CreateTopic",
-      "sns:GetTopicAttributes",
-      "sns:ListSubscriptionsByTopic",
-      "sns:Subscribe",
-      "sqs:GetQueueAttributes",
-      "sqs:GetQueueUrl",
-      "codebuild:CreateProject",
-      "codebuild:DeleteProject",
-      "codebuild:BatchGetBuilds",
-      "codebuild:StartBuild",
-    ]
-
-    resources = ["*"]
-
-    effect = "Allow"
-  }
-
-  statement {
-    sid = "AllowS3OperationsOnElasticBeanstalkBuckets"
-
-    actions = [
-      "s3:*"
-    ]
-
-    resources = [
-      "arn:aws:s3:::*"
-    ]
-
-    effect = "Allow"
-  }
-
-  statement {
-    sid = "AllowDeleteCloudwatchLogGroups"
-
-    actions = [
-      "logs:DeleteLogGroup"
-    ]
-
-    resources = [
-      "arn:aws:logs:*:*:log-group:/aws/elasticbeanstalk*"
-    ]
-
-    effect = "Allow"
-  }
-
-  statement {
-    sid = "AllowCloudformationOperationsOnElasticBeanstalkStacks"
-
-    actions = [
-      "cloudformation:*"
-    ]
-
-    resources = [
-      "arn:aws:cloudformation:*:*:stack/awseb-*",
-      "arn:aws:cloudformation:*:*:stack/eb-*"
-    ]
 
     effect = "Allow"
   }
@@ -301,13 +174,6 @@ resource "aws_security_group" "default" {
   description = "Allow inbound traffic from provided Security Groups"
 
   vpc_id = var.vpc_id
-
-  ingress {
-    from_port       = 0
-    to_port         = 0
-    protocol        = -1
-    security_groups = var.allowed_security_groups
-  }
 
   egress {
     from_port   = 0
@@ -408,7 +274,7 @@ locals {
     {
       namespace = "aws:elbv2:loadbalancer"
       name      = "AccessLogsS3Bucket"
-      value     = join("", sort(aws_s3_bucket.elb_logs.*.id))
+      value     = var.s3_eb_elb_logs_bucket_id
     },
     {
       namespace = "aws:elbv2:loadbalancer"
@@ -555,6 +421,18 @@ resource "aws_elastic_beanstalk_environment" "default" {
   }
 
   setting {
+    namespace = "aws:autoscaling:launchconfiguration"
+    name      = "SSHSourceRestriction"
+    value     = "tcp,22,22,${aws_security_group.default.id}"
+  }
+
+  setting {
+    namespace = "aws:autoscaling:launchconfiguration"
+    name      = "DisableIMDSv1"
+    value     = "true"
+  }
+
+  setting {
     namespace = "aws:autoscaling:asg"
     name      = "Availability Zones"
     value     = var.availability_zone_selector
@@ -586,6 +464,13 @@ resource "aws_elastic_beanstalk_environment" "default" {
     namespace = "aws:elasticbeanstalk:healthreporting:system"
     name      = "SystemType"
     value     = var.enhanced_reporting_enabled ? "enhanced" : "basic"
+    resource  = ""
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:healthreporting:system"
+    name      = "EnhancedHealthAuthEnabled"
+    value     = var.enhanced_auth_enabled
     resource  = ""
   }
 
@@ -893,69 +778,6 @@ resource "aws_elastic_beanstalk_environment" "default" {
       name      = setting.key
       value     = setting.value
       resource  = ""
-    }
-  }
-}
-
-data "aws_elb_service_account" "main" {
-  count = var.tier == "WebServer" && var.environment_type == "LoadBalanced" ? 1 : 0
-}
-
-data "aws_iam_policy_document" "elb_logs" {
-  count = var.tier == "WebServer" && var.environment_type == "LoadBalanced" ? 1 : 0
-
-  statement {
-    sid = ""
-
-    actions = [
-      "s3:PutObject",
-    ]
-
-    resources = [
-      "arn:aws:s3:::${module.this.id}-eb-loadbalancer-logs/*"
-    ]
-
-    principals {
-      type        = "AWS"
-      identifiers = [join("", data.aws_elb_service_account.main.*.arn)]
-    }
-
-    effect = "Allow"
-  }
-}
-
-resource "aws_s3_bucket" "elb_logs" {
-  #bridgecrew:skip=BC_AWS_S3_13:Skipping `Enable S3 Bucket Logging` check until bridgecrew will support dynamic blocks (https://github.com/bridgecrewio/checkov/issues/776).
-  #bridgecrew:skip=BC_AWS_S3_14:Skipping `Ensure all data stored in the S3 bucket is securely encrypted at rest` check until bridgecrew will support dynamic blocks (https://github.com/bridgecrewio/checkov/issues/776).
-  #bridgecrew:skip=CKV_AWS_52:Skipping `Ensure S3 bucket has MFA delete enabled` due to issue in terraform (https://github.com/hashicorp/terraform-provider-aws/issues/629).
-  count         = var.tier == "WebServer" && var.environment_type == "LoadBalanced" ? 1 : 0
-  bucket        = "${module.this.id}-eb-loadbalancer-logs"
-  acl           = "private"
-  force_destroy = var.force_destroy
-  policy        = join("", data.aws_iam_policy_document.elb_logs.*.json)
-  tags          = module.this.tags
-
-  dynamic "server_side_encryption_configuration" {
-    for_each = var.s3_bucket_encryption_enabled ? ["true"] : []
-
-    content {
-      rule {
-        apply_server_side_encryption_by_default {
-          sse_algorithm = "AES256"
-        }
-      }
-    }
-  }
-
-  versioning {
-    enabled = var.s3_bucket_versioning_enabled
-  }
-
-  dynamic "logging" {
-    for_each = var.s3_bucket_access_log_bucket_name != "" ? [1] : []
-    content {
-      target_bucket = var.s3_bucket_access_log_bucket_name
-      target_prefix = "logs/${module.this.id}/"
     }
   }
 }

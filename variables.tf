@@ -3,6 +3,11 @@ variable "region" {
   description = "AWS region"
 }
 
+variable "account_id" {
+  type        = string
+  description = "Account id"
+}
+
 variable "description" {
   type        = string
   default     = ""
@@ -112,6 +117,12 @@ variable "enhanced_reporting_enabled" {
   type        = bool
   default     = true
   description = "Whether to enable \"enhanced\" health reporting for this environment.  If false, \"basic\" reporting is used.  When you set this to false, you must also set `enable_managed_actions` to false"
+}
+
+variable "enhanced_auth_enabled" {
+  type        = bool
+  default     = true
+  description = "To increase security of your environment and help prevent health data spoofing on your behalf"
 }
 
 variable "managed_actions_enabled" {
@@ -307,7 +318,7 @@ variable "root_volume_size" {
 
 variable "root_volume_type" {
   type        = string
-  default     = "gp2"
+  default     = "gp3"
   description = "The type of the EBS root volume"
 }
 
@@ -478,4 +489,9 @@ variable "s3_bucket_encryption_enabled" {
   type        = bool
   default     = true
   description = "When set to 'true' the resource will have aes256 encryption enabled by default"
+}
+
+variable "s3_eb_elb_logs_bucket_id" {
+  type        = string
+  description = "ID of the externally-managed S3 bucket ALB access logs should be delivered to"
 }
